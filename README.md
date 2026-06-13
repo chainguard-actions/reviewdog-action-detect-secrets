@@ -1,0 +1,1 @@
+# reviewdog-action-detect-secrets
