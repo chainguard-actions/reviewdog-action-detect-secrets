@@ -9,6 +9,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
 | v0.29.6 | [`v0.29.6`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/tree/v0.29.6) | [`53b5017`](https://github.com/reviewdog/action-detect-secrets/commit/53b50179462bbe04af2f25f088b97e55e1dec3a1) |
+| v0.29.7 | [`v0.29.7`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/tree/v0.29.7) | [`ec0dde5`](https://github.com/reviewdog/action-detect-secrets/commit/ec0dde52d1644e27666856474a8cbc86032dcb8d) |
 
 ## Privacy
 
