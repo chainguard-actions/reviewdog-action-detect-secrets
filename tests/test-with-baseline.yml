@@ -1,0 +1,47 @@
+name: Test detect-secrets with baseline file
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create a clean directory and a baseline file
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/baseline-test"
+          cat > "$GITHUB_WORKSPACE/tests/fixtures/baseline-test/app.py" << 'EOF'
+          #!/usr/bin/env python
+          def main():
+              print("Hello, world!")
+
+          if __name__ == "__main__":
+              main()
+          EOF
+          # Create a minimal valid detect-secrets baseline file
+          cat > "$GITHUB_WORKSPACE/tests/fixtures/baseline-test/.secrets.baseline" << 'EOF'
+          {
+            "version": "1.4.0",
+            "plugins_used": [],
+            "filters_used": [],
+            "results": {},
+            "generated_at": "2024-01-01T00:00:00Z"
+          }
+          EOF
+
+      - id: action
+        uses: .
+        with:
+          github_token: ${{ github.token }}
+          workdir: tests/fixtures/baseline-test
+          baseline_path: tests/fixtures/baseline-test/.secrets.baseline
+          reporter: local
+          filter_mode: nofilter
+          fail_level: none
+          level: error
+          detect_secrets_flags: --all-files --force-use-all-plugins
+
+      - name: Assert action completed successfully with baseline
+        run: |
+          echo "Action completed with baseline file"
+          echo "PASS: detect-secrets ran successfully with a baseline file"

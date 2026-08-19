@@ -1,0 +1,19 @@
+---
+name: dockerimage
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag reviewdog-detect-secrets:$(date +%s)

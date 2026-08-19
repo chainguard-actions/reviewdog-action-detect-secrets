@@ -1,0 +1,36 @@
+name: Test detect-secrets with skip_audited and verbose flags
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create a clean directory for testing
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/audited-test"
+          cat > "$GITHUB_WORKSPACE/tests/fixtures/audited-test/clean.py" << 'EOF'
+          #!/usr/bin/env python
+          # A clean file with no secrets
+          def add(a, b):
+              return a + b
+          EOF
+
+      - id: action
+        uses: .
+        with:
+          github_token: ${{ github.token }}
+          workdir: tests/fixtures/audited-test
+          reporter: local
+          filter_mode: nofilter
+          fail_level: none
+          level: error
+          skip_audited: "true"
+          verbose: "true"
+          detect_secrets_flags: --all-files --force-use-all-plugins
+
+      - name: Assert action completed successfully with skip_audited and verbose
+        run: |
+          echo "Action completed with skip_audited=true and verbose=true"
+          echo "PASS: detect-secrets ran successfully with skip_audited and verbose flags"
