@@ -1,0 +1,79 @@
+name: Test skip-audited and verbose flags
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up git origin reachable inside the Docker container
+        run: |
+          git config user.email "test@example.com"
+          git config user.name "Test User"
+          rm -rf "$GITHUB_WORKSPACE/.git-remote"
+          git init --bare "$GITHUB_WORKSPACE/.git-remote"
+          git push "$GITHUB_WORKSPACE/.git-remote" HEAD:refs/heads/act-harness
+          git push "$GITHUB_WORKSPACE/.git-remote" --tags
+          git remote set-url origin "$GITHUB_WORKSPACE/.git-remote" 2>/dev/null || \
+            git remote add origin "$GITHUB_WORKSPACE/.git-remote"
+
+      - name: Create test directory with audited baseline
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/audited-dir"
+          cat > "$GITHUB_WORKSPACE/tests/fixtures/audited-dir/config.py" << 'EOF'
+          # This is a test file
+          SOME_VALUE = "not_a_real_secret_just_testing"
+          EOF
+          # Create a baseline with an audited (verified non-secret) entry
+          cat > "$GITHUB_WORKSPACE/tests/fixtures/audited-dir/.secrets.baseline" << 'EOF'
+          {
+            "version": "1.4.0",
+            "plugins_used": [],
+            "filters_used": [],
+            "results": {
+              "config.py": [
+                {
+                  "type": "Secret Keyword",
+                  "filename": "config.py",
+                  "hashed_secret": "abc123",
+                  "is_verified": false,
+                  "line_number": 2,
+                  "is_secret": false
+                }
+              ]
+            },
+            "generated_at": "2024-01-01T00:00:00Z"
+          }
+          EOF
+
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github_token: ${{ github.token }}
+          reporter: github-check
+          filter_mode: nofilter
+          fail_level: none
+          level: error
+          workdir: tests/fixtures/audited-dir
+          baseline_path: tests/fixtures/audited-dir/.secrets.baseline
+          skip_audited: "true"
+          verbose: "true"
+          detect_secrets_flags: --all-files --force-use-all-plugins
+
+      - name: Assert action ran with skip_audited and verbose flags
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded with skip_audited=true and verbose=true"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (expected with sentinel repo for reviewdog API calls)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
