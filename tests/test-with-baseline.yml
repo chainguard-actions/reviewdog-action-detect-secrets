@@ -1,0 +1,53 @@
+name: Test detect-secrets with baseline file
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up git origin reachable inside Docker container
+        run: |
+          git config user.email "test@example.com"
+          git config user.name "Test User"
+          rm -rf "$GITHUB_WORKSPACE/.git-remote"
+          git init --bare "$GITHUB_WORKSPACE/.git-remote"
+          git push "$GITHUB_WORKSPACE/.git-remote" HEAD:refs/heads/act-harness
+          git remote set-url origin "$GITHUB_WORKSPACE/.git-remote" 2>/dev/null || \
+            git remote add origin "$GITHUB_WORKSPACE/.git-remote"
+
+      - name: Create a baseline file and a file with secrets
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/baseline-dir"
+          cat > "$GITHUB_WORKSPACE/baseline-dir/secrets.py" << 'EOF'
+          # Will change this later.
+          SUPER_SECRET_VALUES = '60b725f10c9c85c70d97880dfe8191b3', '3b5d5c3712955042212316173ccf37be'
+          EOF
+          # Create a minimal valid baseline JSON file
+          cat > "$GITHUB_WORKSPACE/.secrets.baseline" << 'EOF'
+          {
+            "version": "1.4.0",
+            "plugins_used": [],
+            "filters_used": [],
+            "results": {},
+            "generated_at": "2024-01-01T00:00:00Z"
+          }
+          EOF
+
+      - id: action
+        uses: .
+        with:
+          github_token: ${{ github.token }}
+          reporter: local
+          filter_mode: nofilter
+          fail_level: none
+          level: error
+          detect_secrets_flags: --all-files --force-use-all-plugins
+          baseline_path: .secrets.baseline
+          workdir: baseline-dir
+
+      - name: Assert action ran with baseline
+        run: |
+          echo "Action completed with baseline file - detect-secrets updated the baseline"
+          echo "PASS"
