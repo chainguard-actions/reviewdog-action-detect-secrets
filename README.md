@@ -17,6 +17,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | v0.31.0 | [`v0.31.0`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/tree/v0.31.0) | [`3bc07a8`](https://github.com/reviewdog/action-detect-secrets/commit/3bc07a8ce36864e49536f7dba77f7c69ff5219a3) |
 | v0.31.1 | [`v0.31.1`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/tree/v0.31.1) | [`53195a7`](https://github.com/reviewdog/action-detect-secrets/commit/53195a798553d71f8d0884ab7335aa5ac42e73e9) |
 | v0.31.2 | [`v0.31.2`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/tree/v0.31.2) | [`8eeb495`](https://github.com/reviewdog/action-detect-secrets/commit/8eeb4956ce5c9f4bebff8e21fd31066a9a011c4c) |
+| v0.31.3 | [`v0.31.3`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/tree/v0.31.3) | [`d4720f8`](https://github.com/reviewdog/action-detect-secrets/commit/d4720f862b52060d151f232944d0f6151eea9a9f) |
 
 ## Privacy
 
