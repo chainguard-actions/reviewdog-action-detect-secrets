@@ -1,0 +1,50 @@
+name: Test updating an existing baseline file
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Create a temporary baseline file in the workspace
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/.tmp-baseline"
+          cat > "$GITHUB_WORKSPACE/.tmp-baseline/.secrets.baseline" <<'EOF'
+          {
+            "version": "1.5.0",
+            "plugins_used": [
+              {"name": "AWSKeyDetector"}
+            ],
+            "filters_used": [],
+            "results": {},
+            "generated_at": "2024-01-01T00:00:00Z"
+          }
+          EOF
+          cat "$GITHUB_WORKSPACE/.tmp-baseline/.secrets.baseline"
+      - id: action
+        uses: .
+        with:
+          workdir: tests/fixtures/secrets
+          baseline_path: .tmp-baseline/.secrets.baseline
+          reporter: local
+          filter_mode: nofilter
+          fail_level: none
+          skip_audited: "true"
+          verbose: "true"
+      - name: Assert action succeeded and baseline was consumed
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected success"
+            exit 1
+          fi
+          if [ -f "$GITHUB_WORKSPACE/.tmp-baseline/.secrets.baseline" ]; then
+            echo "FAIL: expected baseline to be moved out of the workspace"
+            exit 1
+          fi
+          echo "PASS"
+      - name: Cleanup
+        if: always()
+        run: rm -rf "$GITHUB_WORKSPACE/.tmp-baseline"

@@ -1,0 +1,11 @@
+{
+  "baseBranches": [
+    "master"
+  ],
+  "extends": [
+    "config:base"
+  ],
+  "labels": [
+    "bump:patch"
+  ]
+}
