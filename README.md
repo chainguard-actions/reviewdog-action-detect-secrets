@@ -19,6 +19,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | v0.31.2 | [`v0.31.2`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/tree/v0.31.2) | [`8eeb495`](https://github.com/reviewdog/action-detect-secrets/commit/8eeb4956ce5c9f4bebff8e21fd31066a9a011c4c) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/blob/v0.31.2/HARDENING.md) |
 | v0.31.3 | [`v0.31.3`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/tree/v0.31.3) | [`d4720f8`](https://github.com/reviewdog/action-detect-secrets/commit/d4720f862b52060d151f232944d0f6151eea9a9f) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/blob/v0.31.3/HARDENING.md) |
 | v0.31.4 | [`v0.31.4`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/tree/v0.31.4) | [`897d73f`](https://github.com/reviewdog/action-detect-secrets/commit/897d73f2f5ede591f16b90f8a4119e562f72563d) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/blob/v0.31.4/HARDENING.md) |
+| v0.32.0 | [`v0.32.0`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/tree/v0.32.0) | [`1939918`](https://github.com/reviewdog/action-detect-secrets/commit/1939918bdb67fa18bf7cb6e73af72e995f606f92) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-detect-secrets/blob/v0.32.0/HARDENING.md) |
 
 ## Privacy
 
